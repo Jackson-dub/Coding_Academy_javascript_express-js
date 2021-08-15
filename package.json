@@ -1,0 +1,26 @@
+{
+  "name": "c-rdg-115-fr-1-3-javascriptday03-jean-jackson.medilien",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EpitechIT2020/C-RDG-115-FR-1-3-javascriptday03-jean-jackson.medilien.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EpitechIT2020/C-RDG-115-FR-1-3-javascriptday03-jean-jackson.medilien/issues"
+  },
+  "homepage": "https://github.com/EpitechIT2020/C-RDG-115-FR-1-3-javascriptday03-jean-jackson.medilien#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.12"
+  }
+}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch document</title>
+    <style>
+        body{
+            position:relative;
+            display:flex;
+            flex-flow:column;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .wrapper{
+            display:flex;
+            flex-flow:row wrap;
+            max-width:1200px;
+            margin:0 auto;
+        }
+
+        .article{
+            display:flex;
+            flex-flow:column;
+            flex:1 1 calc(25% - 1rem);
+            margin: 0.5rem;
+            border:1px solid lightskyblue;
+            border-radius:3px;
+            padding:0.5rem;
+        }
+
+        article div{
+            flex:1 1 100;
+        }
+
+        .article>div{
+            height:100%;
+        }
+
+        .article .content{
+            flex:1;
+        }
+
+        .button{
+            color:white;
+            background-color:yellowgreen;
+            border-radius:20%;
+            border :none;
+            height:30px;
+            min-width:100px;
+        }
+
+        .bigWindow{
+            display:none;
+            position:absolute;
+            width:50%;
+            height:50%;
+            top:5%;
+            background-color:white;
+            justify-content:center;
+            flex-flow:column;
+            padding:2rem;
+        }
+
+        .bigWindow .body{
+          font-size:2.5rem;
+        }
+
+        .bigWindow button{
+          color:white;
+          background-color:red;
+          width:50px;
+          height:20px;
+          font-size:0.8rem;
+          border-radius:20%;
+        }
+
+        h2{
+          color:rgb(10, 144, 197)
+        }
+
+        #searchBar {
+    width: 100%;
+    height: 32px;
+    border-radius: 3px;
+    border: 1px solid #eaeaea;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+    #searchWrapper {
+        position: relative;
+    }
+
+    #searchWrapper::after {
+        content: '🔍';
+        position: absolute;
+        top: 7px;
+        right: 15px;
+    }
+
+    .container{
+      display: flex;
+    width: 65%;
+    flex-flow: row wrap;
+    }
+
+    #searchWrapper{
+      width:100%;
+    }
+
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+     
+      <div id="searchWrapper">
+          <input
+              type="text"
+              name="searchBar"
+              id="searchBar"
+              placeholder="search for a movie"
+          />
+      </div>
+      <ul id="moviesList"></ul>
+  </div>
+      <div class="bigWindow"><div class="body"></div><button id="close">X</button></div>
+      <div class="wrapper"></div>
+
+    <script>
+      async function fetchData() {
+        const response = await fetch("/api/movies");
+        const data = await response.json();
+        let count = 0;
+        data.forEach(function (item) {
+          let movie = document.createElement("div");
+          movie.classList.add("article");
+          movie.innerHTML = `<div><h2>${item.title}</h2><p class='content'>${item.summary}<p><button class='button' id=${count}>Voir +</button></div>`;
+             count++
+          document.querySelector(".wrapper").appendChild(movie);
+        });
+
+        let buttons = document.querySelectorAll(".button");
+                 buttons.forEach(function(button){
+                button.onclick = function(e){
+                    console.log(button.id);
+                    let fullMovie = document.querySelector(".body");
+                    let id=button.id;
+                    fullMovie.innerHTML = `<div><h2>${data[id].title}</h2><div>${data[id].summary}</div><div>${data[id].release_date}</div><div>${data[id].end_release_date}</div><div>${data[id].prod_year}</div><div>${data[id].min_duration}</div><div>${data[id].producer_id}</div><div><span>${data[id].genre_id}</span><span>${data[id].id}</span></div></div>`;
+                    document.querySelector(".bigWindow").style.display = "flex";
+                    count++;
+            }
+        })
+
+           }
+
+           let shotDown = document.querySelector('#close');
+            shotDown.onclick=function(){
+            document.querySelector(".bigWindow").style.display = "none";
+           }
+
+
+      fetchData();
+
+      const moviesList = document.getElementById('moviesList');
+      const searchBar = document.getElementById('searchBar');
+
+      let hpMovies = [];
+
+      searchBar.addEventListener('keyup',(e)=>{
+
+        let searchString = "";
+
+        if(e.target.value == ""){
+          searchString = null;
+        }else{
+          searchString = e.target.value.toLowerCase();
+        }
+        
+
+        const filteredMovies = hpMovies.filter(movie =>{
+         return movie.title.toLowerCase().includes(searchString);
+        });
+
+        console.log(filteredMovies);
+
+          displayMovies(filteredMovies);
+      })
+
+
+
+const loadMovies = async () => {
+    try {
+        const res = await fetch('/api/movies');
+        hpMovies = await res.json();
+       // displayMovies(hpMovies);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+const displayMovies = (movies) => {
+  if(movies !== ""){
+    const htmlString = movies
+        .map((movie) => {
+            return `
+            <li class="character">
+              <div><h2>${movie.title}</h2><p class='content'>${movie.summary}<p></div>
+
+            </li>
+        `;
+        })
+        .join('');
+    moviesList.innerHTML = htmlString;
+      }else{
+        moviesList.innerHTML = "";
+      }
+};
+
+loadMovies();
+
+    </script>
+  </body>
+</html>
